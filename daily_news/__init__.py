@@ -485,7 +485,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     )
     browser = Ariadne.current().launch_manager.get_interface(PlaywrightBrowser)
     async with browser.page(
-        viewport={"width": 800, "height": 800}, device_scale_factor=1.5
+        viewport={"width": 800, "height": 800}, device_scale_factor=1.0
     ) as page:
         await page.set_content(html)
         img = await page.screenshot(

@@ -1,3 +1,5 @@
+# 急需有人来帮我扩充一下文案！！
+# 
 import json
 import random
 from datetime import datetime
@@ -41,12 +43,14 @@ with settings_file.open("r", encoding="UTF-8") as f:
     EVALUATE_TEMPLATES_3 = _data["news_evaluate_3"]
     EVALUATE_TEMPLATES_4 = _data["news_evaluate_4"]
     EVALUATE_TEMPLATES_5 = _data["news_evaluate_5"]
+    BFPJ_TEMPLATES = _data["bfpj"]
     COMMENT_TEMPLATES_0 = _data["public_comment_0"]
     COMMENT_TEMPLATES_1 = _data["public_comment_1"]
     COMMENT_TEMPLATES_2 = _data["public_comment_2"]
     COMMENT_TEMPLATES_3 = _data["public_comment_3"]
     COMMENT_TEMPLATES_4 = _data["public_comment_4"]
     COMMENT_TEMPLATES_5 = _data["public_comment_5"]
+    BFDZDP_TEMPLATES = _data["bfdzdp"]
     Bignews = _data["Abuse_of_power"]
 # ################################################################
 
@@ -71,6 +75,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
         news_length = random.randint(-30, 0)
     else:
         news_length = random.randint(-10, 30)
+    
     a = "\n"
 
     phimosis_status = "未知"
@@ -115,14 +120,18 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
             dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_1)
             dick_comment = random.choice(COMMENT_TEMPLATES_1)
             news_score = random.randint(40, 80)
-        elif 10 <= news_length <= 15:
+        elif 6 < news_length <= 15:
             dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_2)
             dick_comment = random.choice(COMMENT_TEMPLATES_2)
             news_score = random.randint(30, 60)
+        elif 3 <= news_length <= 6:
+            dick_length_evaluate = random.choice(BFPJ_TEMPLATES)
+            dick_comment = random.choice(BFDZDP_TEMPLATES)
+            news_score = random.randint(20, 30)
         else:
             dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_3)
             dick_comment = random.choice(COMMENT_TEMPLATES_3)
-            news_score = random.randint(0, 30)
+            news_score = random.randint(0, 20)
 
     elif news_length < 0:
         news_or_cloaca = "泄殖腔"
@@ -519,12 +528,14 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     Blacklist.check(),
     FunctionCall.record(channel.module),
 )
-async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
+async def bb(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
+    bblength = 0
     await send_message(
             event.sender.group if isinstance(event, GroupMessage) else event.sender,
             MessageChain("你先别急，我还没写"),
             app.account,
         )
+    
 
 
 # Seed

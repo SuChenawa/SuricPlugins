@@ -494,10 +494,6 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     return await send_message(event, MessageChain(Image(data_bytes=img)), app.account)
 
 
-# Seed
-def random_seed(supplicant: Member | Friend):
-    random.seed(int(f"{datetime.now().strftime('%Y%m%d')}{supplicant.id}"))
-
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), UnionMatch("Null几把呢", "你几把呢")))
@@ -513,3 +509,25 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
             MessageChain("你几把消失了"),
             app.account,
         )
+
+
+@listen(GroupMessage, FriendMessage)
+@dispatch(Twilight(PrefixMatch(), UnionMatch("我想拥有bb", "我想拥有逼逼")))
+@decorate(
+    Switch.check(channel.module),
+    Distribution.distribute(),
+    Blacklist.check(),
+    FunctionCall.record(channel.module),
+)
+async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
+    await send_message(
+            event.sender.group if isinstance(event, GroupMessage) else event.sender,
+            MessageChain("你先别急，我还没写"),
+            app.account,
+        )
+
+
+# Seed
+def random_seed(supplicant: Member | Friend):
+    random.seed(int(f"{datetime.now().strftime('%Y%m%d')}{supplicant.id}"))
+

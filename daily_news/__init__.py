@@ -101,8 +101,8 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     husbandurl = Path(DATA_PATH / "husbands.json")
     with husbandurl.open("r", encoding="UTF-8") as f:
         _data = json.loads(f.read())
-        image_url = _data["urlpath"]
-    Image_url = random.choice(image_url)
+        image_Num = _data["picNum"]
+    picselect = random.randint(1,image_Num)
     random_seed(event.sender)
     # #######################################################################
     # TODO:PlayWright重构
@@ -267,7 +267,8 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     egg_weight_out = egg_weight
     # 大众点评分数
     score_out = news_score / 10
-    Image_url_out = Image_url
+    Image_url_out = picselect
+    logger.debug(f"[Daily_News] 正在发送Url:('https://blog.suchenawa.com/SuricPlugins/husband/{Image_url_out}.png')")
     # #######################################################################
     # 史前巨型屎山，没用了 但是不是很想删除，可能是有感情了
     # Commented since not used
@@ -388,7 +389,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 
     .husband {
 """+f"""
-        background: url(https://blog.suchenawa.com/SuricPlugins/husband/{Image_url_out}) no-repeat center center;
+        background: url(https://blog.suchenawa.com/SuricPlugins/husband/{Image_url_out}.png) no-repeat center center;
 """+"""
         background-size: contain;
         background-size: 600px;

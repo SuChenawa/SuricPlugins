@@ -65,12 +65,11 @@ async def fantaspic(app: Ariadne, event: MessageEvent,supplicant: Member | Frien
         _data = json.loads(f.read())
         image_Num = _data["picNum"]
     picselect = random.randint(1,image_Num)
-    logger.success(f"[INFO]:Picselect={picselect}")
     session =  Ariadne.service.client_session
     async with session.get(f"https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg") as r:
          data = await r.read()
     await send_message(event, MessageChain(Image(data_bytes=data)), app.account)
-    logger.debug(f"https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg")
+    logger.debug(f"[Fantaspic] 正在发送Url:('https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg')")
 
 
 

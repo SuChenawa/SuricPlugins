@@ -1,277 +1,3 @@
-# 急需有人来帮我扩充一下文案！！
-# 
-import json
-import os
-import random
-from datetime import datetime
-from pathlib import Path
-
-import requests
-
-from graia.ariadne import Ariadne
-from graia.ariadne.event.message import (
-    Friend,
-    Member,
-    GroupMessage,
-    FriendMessage,
-    MessageEvent,
-)
-from loguru import logger
-from graia.ariadne.message.chain import MessageChain
-from graia.ariadne.message.element import Image
-from graia.ariadne.message.parser.twilight import Twilight, UnionMatch
-from graia.ariadne.util.saya import listen, dispatch, decorate
-from graia.saya import Channel
-from graiax.playwright import PlaywrightBrowser
-from graia.scheduler import GraiaScheduler
-from graia.scheduler import timers
-from graia.scheduler.saya import SchedulerSchema
-
-from library.decorator.blacklist import Blacklist
-from library.decorator.distribute import Distribution
-from library.decorator.function_call import FunctionCall
-from library.decorator.switch import Switch
-from library.util.dispatcher import PrefixMatch
-from library.util.message import send_message
-
-channel = Channel.current()
-assets_path = Path(Path(__file__).parent, "assets")
-# ################################################################
-# 热更新Json文件
-# @channel.use(SchedulerSchema(timers.every_minute())) 这个是调试用的
-@channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
-async def husbands_sync(app: Ariadne):
-    url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
-    filepath = Path(assets_path / "husbands.json")
-    hfile = requests.get(url)
-    if os.path.exists(filepath):
-        os.remove(filepath)
-    else:
-        logger.success("[Daily_News] 文件'Husband.Json'不存在，即将自动下载")
-    open(filepath,'wb').write(hfile.content)
-    logger.success("[Daily_News] 文件更新完毕")
-    
-
-# ################################################################
-# 读取Json文件
-
-
-settings_file = Path(assets_path / "news_settings.json")
-with settings_file.open("r", encoding="UTF-8") as f:
-    _data = json.loads(f.read())
-    COLOR_TEMPLATES = _data["news_color"]
-    OUTWARD_TEMPLATES = _data["outward"]
-    EVALUATE_TEMPLATES_0 = _data["news_evaluate_0"]
-    EVALUATE_TEMPLATES_1 = _data["news_evaluate_1"]
-    EVALUATE_TEMPLATES_2 = _data["news_evaluate_2"]
-    EVALUATE_TEMPLATES_3 = _data["news_evaluate_3"]
-    EVALUATE_TEMPLATES_4 = _data["news_evaluate_4"]
-    EVALUATE_TEMPLATES_5 = _data["news_evaluate_5"]
-    BFPJ_TEMPLATES = _data["bfpj"]
-    COMMENT_TEMPLATES_0 = _data["public_comment_0"]
-    COMMENT_TEMPLATES_1 = _data["public_comment_1"]
-    COMMENT_TEMPLATES_2 = _data["public_comment_2"]
-    COMMENT_TEMPLATES_3 = _data["public_comment_3"]
-    COMMENT_TEMPLATES_4 = _data["public_comment_4"]
-    COMMENT_TEMPLATES_5 = _data["public_comment_5"]
-    BFDZDP_TEMPLATES = _data["bfdzdp"]
-    Bignews = _data["Abuse_of_power"]
-
-husbandurl = Path(assets_path / "husbands.json")
-with husbandurl.open("r", encoding="UTF-8") as f:
-    _data = json.loads(f.read())
-    image_url = _data["urlpath"]
-
-# ################################################################
-
-
-@listen(GroupMessage, FriendMessage)
-@dispatch(Twilight(PrefixMatch(), UnionMatch("今日牛子", "随机牛子", "我几把呢")))
-@decorate(
-    Switch.check(channel.module),
-    Distribution.distribute(),
-    Blacklist.check(),
-    FunctionCall.record(channel.module),
-)
-async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
-    Image_url = random.choice(image_url)
-    random_seed(event.sender)
-    # #######################################################################
-    # TODO:PlayWright重构
-    # #######################################################################
-    # 需要首先判断牛子是否大于0
-    if(supplicant.id == 1306542338):
-        news_length = random.randint(18, 30)
-    elif(supplicant.id == 2970290021):
-        news_length = random.randint(-30, 0)
-    else:
-        news_length = random.randint(-10, 30)
-    
-    a = "\n"
-
-    phimosis_status = "未知"
-    boki_status = "未知"
-    egg_weight = "未知"
-    angle = f"未知"
-
-    if news_length > 0:
-
-        # 确定拥有的生殖器类型
-        news_or_cloaca = "牛子"
-
-        # 确定是否勃起
-        if random.randint(0, 1) == 1:
-            boki_status = "勃起"
-            angle_status = "勃起"
-            angle = f"{random.randint(90, 180)}度"
-        else:
-            boki_status = "软掉"
-            angle_status = ""
-            angle = f"{random.randint(0, 90)}度"
-
-        # 判断是否包茎
-        rd_phimosis_status = random.randint(0, 2)
-        if rd_phimosis_status == 0:
-            phimosis_status = "包茎"
-        elif rd_phimosis_status == 1:
-            phimosis_status = "半包茎"
-        else:
-            phimosis_status = "非包茎"
-
-        # 判断蛋蛋重量
-        rd_egg_weight = random.randint(50, 500)
-        egg_weight = f"{rd_egg_weight}"
-
-        # 生成牛子的系统评价 # 生成牛子的大众点评
-        if news_length > 20:
-            dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_0)
-            dick_comment = random.choice(COMMENT_TEMPLATES_0)
-            news_score = random.randint(60, 100)
-        elif 15 < news_length <= 20:
-            dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_1)
-            dick_comment = random.choice(COMMENT_TEMPLATES_1)
-            news_score = random.randint(40, 80)
-        elif 6 < news_length <= 15:
-            dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_2)
-            dick_comment = random.choice(COMMENT_TEMPLATES_2)
-            news_score = random.randint(30, 60)
-        elif 3 <= news_length <= 6:
-            dick_length_evaluate = random.choice(BFPJ_TEMPLATES)
-            dick_comment = random.choice(BFDZDP_TEMPLATES)
-            news_score = random.randint(20, 30)
-        else:
-            dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_3)
-            dick_comment = random.choice(COMMENT_TEMPLATES_3)
-            news_score = random.randint(0, 20)
-
-    elif news_length < 0:
-        news_or_cloaca = "泄殖腔"
-        # 生成泄殖腔的系统评价 # 生成泄殖腔的大众点评
-        dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_5)
-        dick_comment = random.choice(COMMENT_TEMPLATES_5)
-        news_score = random.randint(0, 100)
-
-    else:
-        news_or_cloaca = "如履平地"
-        # 生成独特的评价
-        dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_4)
-        dick_comment = random.choice(COMMENT_TEMPLATES_4)
-        news_score = 0
-
-    # 照搬旧版的附魔系统
-    if random.randint(0, 4) == 0:
-        enchant_lv = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ"]
-        enchant_list = [
-            "附魔上了消失诅咒",
-            "附魔上了经*修补",
-            "附魔上了火焰附加",
-            "附魔上了耐久",
-            "附魔上了荆棘",
-            "附魔上了力量",
-        ]
-        rd_enchant = random.randint(0, 5)
-        dick_enchant = enchant_list[rd_enchant]
-        dick_comment_score = 0
-        if rd_enchant < 2:
-            dick_comment_score += rd_enchant * 10
-        else:
-            if rd_enchant == 2:
-                rd_lv = random.randint(0, 1)
-                dick_comment_score += (rd_lv + 1) * 5
-            elif rd_enchant < 5:
-                rd_lv = random.randint(0, 2)
-                dick_comment_score += (rd_lv + 1) * 10 / 3.0
-            else:
-                rd_lv = random.randint(0, 4)
-                dick_comment_score += (rd_lv + 1) * 2
-            dick_enchant += enchant_lv[rd_lv]
-        dick_enchant += "的"
-    else:
-        dick_enchant = "None"
-
-    # 新功能
-    # 牛子颜色
-    ## 定义三个数值来生成 RGB
-    cr = random.randint(0, 255)
-    cg = random.randint(0, 255)
-    cb = random.randint(0, 255)
-    # # 临时测试
-    # cr = 0
-    # cg = 0
-    # cb = 0
-    ## 没用的两个参数
-    black = "black"
-    white = "white"
-    ## 设想是如果r+g+b大于382就将覆盖层文字修改为黑色，否则为白色
-    if cr + cg + cb > 382:
-        hextextcolor = "rgb(0,0,0)"
-    else:
-        hextextcolor = "rgb(255,255,255)"
-    # RGB-to-Hex 将RGB转换为Hex值，使其占用长度减少
-    hexcolor = ("{:02X}" * 3).format(cr, cg, cb)
-    # print(cr, cg, cb)
-    # print(hexcolor)
-    # print(hextextcolor)
-    # #######################################################################
-    # 先判断牛子是否大于0
-    # >0 为正常牛子
-    # <0 为腔
-    # #######################################################################
-
-# 向PlayWright输出的参数内容
-    # 生殖器类型
-    news_or_cloaca_out = news_or_cloaca
-    # 长度
-    news_length_out = news_length
-    # 系统评价
-    system_comment_out = dick_length_evaluate
-    # 颜色底色
-    hextextcolor_out = hextextcolor
-    # 颜色
-    hexcolor_out = f"#{hexcolor}"
-    # 附魔
-    dick_enchant_out = dick_enchant
-    # 是否包茎
-    phimosis_status_out = phimosis_status
-    # 是否勃起
-    boki_status_out = boki_status
-    # 蛋蛋重量
-    egg_weight_out = egg_weight
-    # 大众点评分数
-    score_out = news_score / 10
-    Image_url_out = Image_url
-    # #######################################################################
-    # 史前巨型屎山，没用了 但是不是很想删除，可能是有感情了
-    # Commented since not used
-    # if news_or_cloaca == "牛子":
-    #     news_message = f"你今天有一根{dick_enchant}{hexcolor_out}{boki_status}的{news_length_out}CM长的，{angle_status}角度为{angle}的{phimosis_status}的,并且蛋蛋{egg_weight}的牛子{a}系统点评：{system_comment_out}{a}大众点评：{Score_out}分，{dick_comment}"
-    # else:
-    #     news_message = f"你今天有一根{dick_enchant}{hexcolor_out}的{news_length_out}CM深的泄殖腔{a}系统点评：{system_comment_out}{a}大众点评：{Score_out}分，{dick_comment}"
-    # #######################################################################
-    random.seed()
-    html = (
-        """
-    
 <!doctype html>
 <html lang="zh-cmn-Hans">
 <html>
@@ -379,22 +105,27 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     }
 
     .husband {
-"""+f"""
-        background: url(https://blog.suchenawa.com/SuricPlugins/husband/{Image_url_out}) no-repeat center center;
-"""+"""
+
+        background: url(./myhusband/suchen_husband1.jpg) no-repeat center center;
         background-size: contain;
         background-size: 600px;
         /* position: fixed; */
+        z-index: -1;
         /* -moz-background-size: cover;
         -ms-background-size: cover;
         -o-background-size: cover; */
 
     }
-    
-</style>
 
-"""
-        + f"""
+    /* .husband {
+
+        display: inline-block;
+        vertical-align: middle;
+        vertical-align: middle;
+        display: table-cell;
+        text-align: center;
+    } */
+</style>
 
 <body class="limit" style="margin:0px;padding:0px;background-color:transparent;">
     <div style="background-color: #FDFCFC; border-radius: 64px;">
@@ -527,9 +258,10 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
                         <span style="font-size:24px">系统评价：</span>
                         <span style="font-size:24px">{system_comment_out}</span>
                     </div>
-                    <div style="background-color: rgba(46, 101, 120, 0.05);border-radius: 50px;width: 100%;">
-                        <div class="husband" style="height: 300px;width: 100%;border-radius: 50px;">
-                            
+                    <div
+                        style="background-color: rgba(46, 101, 120, 0.05);border-radius: 50px;width: 100%;overflow: hidden;">
+                        <div class="husband" style="height: 260px;width: 100%;border-radius: 50px;">
+                            <!-- <img class="husband" src="./myhusband/suchen_husband1.jpg" width="100%" /> -->
 
                         </div>
 
@@ -540,56 +272,3 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 </body>
 
 </html>
-    
-    """
-    )
-    browser = Ariadne.current().launch_manager.get_interface(PlaywrightBrowser)
-    async with browser.page(
-        viewport={"width": 800, "height": 800}, device_scale_factor=1.0
-    ) as page:
-        await page.set_content(html)
-        img = await page.screenshot(
-            type="jpeg", quality=80, full_page=True, scale="device"
-        )
-    return await send_message(event, MessageChain(Image(data_bytes=img)), app.account)
-
-
-
-@listen(GroupMessage, FriendMessage)
-@dispatch(Twilight(PrefixMatch(), UnionMatch("Null几把呢", "你几把呢")))
-@decorate(
-    Switch.check(channel.module),
-    Distribution.distribute(),
-    Blacklist.check(),
-    FunctionCall.record(channel.module),
-)
-async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
-    await send_message(
-            event.sender.group if isinstance(event, GroupMessage) else event.sender,
-            MessageChain("你几把消失了"),
-            app.account,
-        )
-
-
-@listen(GroupMessage, FriendMessage)
-@dispatch(Twilight(PrefixMatch(), UnionMatch("我想拥有bb", "我想拥有逼逼")))
-@decorate(
-    Switch.check(channel.module),
-    Distribution.distribute(),
-    Blacklist.check(),
-    FunctionCall.record(channel.module),
-)
-async def bb(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
-    bblength = 0
-    await send_message(
-            event.sender.group if isinstance(event, GroupMessage) else event.sender,
-            MessageChain("你先别急，我还没写"),
-            app.account,
-        )
-    
-
-
-# Seed
-def random_seed(supplicant: Member | Friend):
-    random.seed(int(f"{datetime.now().strftime('%Y%m%d')}{supplicant.id}"))
-

@@ -38,6 +38,8 @@ from graia.saya.builtins.broadcast import ListenerSchema
 
 channel = Channel.current()
 assets_path = Path(Path(__file__).parent, "assets")
+DATA_PATH = it(Modules).get(channel.module).data_path
+filepath = Path(DATA_PATH / "husbands.json")
 # ################################################################
 # 热更新Json文件
 
@@ -46,8 +48,6 @@ assets_path = Path(Path(__file__).parent, "assets")
 @channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
 async def husbands_sync(app: Ariadne):
     url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
-    DATA_PATH = it(Modules).get(channel.module).data_path
-    filepath = Path(DATA_PATH / "husbands.json")
     hfile = requests.get(url)
     if os.path.exists(filepath):
         os.remove(filepath)
@@ -82,7 +82,7 @@ with settings_file.open("r", encoding="UTF-8") as f:
     BFDZDP_TEMPLATES = _data["bfdzdp"]
     Bignews = _data["Abuse_of_power"]
 
-husbandurl = Path(assets_path / "husbands.json")
+husbandurl = Path(DATA_PATH / "husbands.json")
 with husbandurl.open("r", encoding="UTF-8") as f:
     _data = json.loads(f.read())
     image_url = _data["urlpath"]

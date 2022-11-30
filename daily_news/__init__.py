@@ -7,7 +7,8 @@ from datetime import datetime
 from pathlib import Path
 
 import requests
-
+from creart import it
+from library.util.module import Modules
 from graia.ariadne import Ariadne
 from graia.ariadne.event.message import (
     Friend,
@@ -38,11 +39,14 @@ channel = Channel.current()
 assets_path = Path(Path(__file__).parent, "assets")
 # ################################################################
 # 热更新Json文件
-# @channel.use(SchedulerSchema(timers.every_minute())) 这个是调试用的
-@channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
+
+# 这个是调试用的
+@channel.use(SchedulerSchema(timers.every_minute())) 
+# @channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
 async def husbands_sync(app: Ariadne):
     url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
-    filepath = Path(assets_path / "husbands.json")
+    DATA_PATH = it(Modules).get(channel.module).data_path
+    filepath = Path(DATA_PATH / "husbands.json")
     hfile = requests.get(url)
     if os.path.exists(filepath):
         os.remove(filepath)

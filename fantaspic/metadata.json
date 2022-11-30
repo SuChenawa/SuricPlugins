@@ -1,0 +1,19 @@
+{
+    "name": "随机无聊图",
+    "version": "0.0.0",
+    "pack": "module.fantaspic",
+    "authors": [
+        "suchen"
+    ],
+    "required": [],
+    "description": "图床(但是不多)",
+    "category": [
+        "random:随机"
+    ],
+    "advanced": {
+        "enable_by_default": false,
+        "allow_disable": true,
+        "allow_unload": true,
+        "hidden": false
+    }
+}

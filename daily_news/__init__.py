@@ -1,5 +1,8 @@
 # 急需有人来帮我扩充一下文案！！
 # 
+# TODO!:将news_settings.json拆分并写入datapath
+# TODO?:增加一个ApplicationLaunched，虽然不知道怎么用，以后再说
+# TODO?:可能需要优化一下网页结构了，之前几十分钟写出来的貌似有点过于凌乱
 import json
 import os
 import random

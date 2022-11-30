@@ -27,13 +27,14 @@ from graiax.playwright import PlaywrightBrowser
 from graia.scheduler import GraiaScheduler
 from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
-
+from graia.ariadne.event.lifecycle import ApplicationLaunched
 from library.decorator.blacklist import Blacklist
 from library.decorator.distribute import Distribution
 from library.decorator.function_call import FunctionCall
 from library.decorator.switch import Switch
 from library.util.dispatcher import PrefixMatch
 from library.util.message import send_message
+from graia.saya.builtins.broadcast import ListenerSchema
 
 channel = Channel.current()
 assets_path = Path(Path(__file__).parent, "assets")
@@ -41,8 +42,8 @@ assets_path = Path(Path(__file__).parent, "assets")
 # 热更新Json文件
 
 # 这个是调试用的
-@channel.use(SchedulerSchema(timers.every_minute())) 
-# @channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
+# @channel.use(SchedulerSchema(timers.every_minute())) 
+@channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
 async def husbands_sync(app: Ariadne):
     url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
     DATA_PATH = it(Modules).get(channel.module).data_path

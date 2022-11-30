@@ -6,6 +6,7 @@ import random
 from datetime import datetime
 from pathlib import Path
 import requests
+import asyncio
 from creart import it
 from library.util.module import Modules
 from graia.ariadne import Ariadne
@@ -33,26 +34,22 @@ from library.util.message import send_message
 
 channel = Channel.current()
 DATA_PATH = it(Modules).get(channel.module).data_path
-url = 'https://blog.suchenawa.com/SuricPlugins/fantaspic.json'
+url = 'https://blog.suchenawa.com/SuricPlugins/fantaspics.json'
+hfile = requests.get(url)
+filepath = Path(DATA_PATH / "fantaspics.json")
+open(filepath,'wb').write(hfile.content)
+logger.success("[Fantaspic] 启动检查:文件下载完毕")
+
 # @channel.use(SchedulerSchema(timers.every_custom_seconds(5))) 
 @channel.use(SchedulerSchema(timers.every_hours())) 
 async def fantaspic_file_sync(app: Ariadne):
-    
-    filepath = Path(DATA_PATH / "husbands.json")
-    open(filepath,'w')
     if os.path.exists(filepath):
         os.remove(filepath)
     else:
         logger.success("[Fantaspic] 文件'fantaspics.Json'不存在，即将自动下载")
-       
     hfile = requests.get(url)
     open(filepath,'wb').write(hfile.content)
     logger.success("[Fantaspic] 资源文件更新完毕！")
-
-# husbandurl = Path(DATA_PATH / "fantaspics.json")
-# with husbandurl.open("r", encoding="UTF-8") as f:
-#     _data = json.loads(f.read())
-#     image_Num = _data["picNum"]
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), UnionMatch("fan", "无聊图", "来点图")))
@@ -63,12 +60,17 @@ async def fantaspic_file_sync(app: Ariadne):
     FunctionCall.record(channel.module),
 )
 async def fantaspic(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
-
+    fantaspicurl = Path(DATA_PATH / "fantaspics.json")
+    with fantaspicurl.open("r", encoding="UTF-8") as f:
+        _data = json.loads(f.read())
+        image_Num = _data["picNum"]
     picselect = random.randint(1,image_Num)
-    async with Ariadne.service.client_session as session:
-        async with session.get(f"https://blog.suchenawa.com/SuricPlugins/fantaspic/{image_Num}.jpg") as r:
-            img = await r.read()
-    await send_message(event, MessageChain(Image(data_bytes=img)), app.account)
+    logger.success(f"[INFO]:Picselect={picselect}")
+    session =  Ariadne.service.client_session
+    async with session.get(f"https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg") as r:
+         data = await r.read()
+    await send_message(event, MessageChain(Image(data_bytes=data)), app.account)
+    logger.debug(f"https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg")
 
 
 

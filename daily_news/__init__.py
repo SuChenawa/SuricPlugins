@@ -42,7 +42,12 @@ from graia.saya.builtins.broadcast import ListenerSchema
 channel = Channel.current()
 assets_path = Path(Path(__file__).parent, "assets")
 DATA_PATH = it(Modules).get(channel.module).data_path
+url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
+hfile = requests.get(url)
 filepath = Path(DATA_PATH / "husbands.json")
+open(filepath,'wb').write(hfile.content)
+logger.success("[Daily_News] 启动检查:文件下载完毕")
+
 # ################################################################
 # 热更新Json文件
 
@@ -50,20 +55,17 @@ filepath = Path(DATA_PATH / "husbands.json")
 # @channel.use(SchedulerSchema(timers.every_minute())) 
 @channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
 async def husbands_sync(app: Ariadne):
-    url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
-    hfile = requests.get(url)
     if os.path.exists(filepath):
         os.remove(filepath)
     else:
         logger.success("[Daily_News] 文件'Husband.Json'不存在，即将自动下载")
+    hfile = requests.get(url)
     open(filepath,'wb').write(hfile.content)
     logger.success("[Daily_News] 文件更新完毕")
     
 
 # ################################################################
 # 读取Json文件
-
-
 settings_file = Path(assets_path / "news_settings.json")
 with settings_file.open("r", encoding="UTF-8") as f:
     _data = json.loads(f.read())
@@ -84,12 +86,6 @@ with settings_file.open("r", encoding="UTF-8") as f:
     COMMENT_TEMPLATES_5 = _data["public_comment_5"]
     BFDZDP_TEMPLATES = _data["bfdzdp"]
     Bignews = _data["Abuse_of_power"]
-
-husbandurl = Path(DATA_PATH / "husbands.json")
-with husbandurl.open("r", encoding="UTF-8") as f:
-    _data = json.loads(f.read())
-    image_url = _data["urlpath"]
-
 # ################################################################
 
 
@@ -102,6 +98,10 @@ with husbandurl.open("r", encoding="UTF-8") as f:
     FunctionCall.record(channel.module),
 )
 async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
+    husbandurl = Path(DATA_PATH / "husbands.json")
+    with husbandurl.open("r", encoding="UTF-8") as f:
+        _data = json.loads(f.read())
+        image_url = _data["urlpath"]
     Image_url = random.choice(image_url)
     random_seed(event.sender)
     # #######################################################################

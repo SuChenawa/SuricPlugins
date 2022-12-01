@@ -7,6 +7,7 @@ from datetime import datetime
 from pathlib import Path
 import requests
 import asyncio
+import aiohttp
 from creart import it
 from library.util.module import Modules
 from graia.ariadne import Ariadne
@@ -25,6 +26,7 @@ from graia.ariadne.util.saya import listen, dispatch, decorate
 from graia.saya import Channel
 from graia.scheduler import timers
 from graia.scheduler.saya import SchedulerSchema
+from graia.ariadne.event.lifecycle import ApplicationLaunched
 from library.decorator.blacklist import Blacklist
 from library.decorator.distribute import Distribution
 from library.decorator.function_call import FunctionCall
@@ -35,21 +37,22 @@ from library.util.message import send_message
 channel = Channel.current()
 DATA_PATH = it(Modules).get(channel.module).data_path
 url = 'https://blog.suchenawa.com/SuricPlugins/fantaspics.json'
-hfile = requests.get(url)
 filepath = Path(DATA_PATH / "fantaspics.json")
-open(filepath,'wb').write(hfile.content)
-logger.success("[Fantaspic] 启动检查:文件下载完毕")
 
-# @channel.use(SchedulerSchema(timers.every_custom_seconds(5))) 
+# ################################################################
+# *启动更新
+@listen(ApplicationLaunched)
+async def OnApplicationLaunched_Update():
+    logger.info("[Fantaspic] 正在运行启动后文件更新服务")
+    await file_update_service()
+
+# ################################################################
+# *文件热更新
+# @channel.use(SchedulerSchema(timers.every_custom_seconds(20))) 
 @channel.use(SchedulerSchema(timers.every_hours())) 
 async def fantaspic_file_sync(app: Ariadne):
-    if os.path.exists(filepath):
-        os.remove(filepath)
-    else:
-        logger.success("[Fantaspic] 文件'fantaspics.Json'不存在，即将自动下载")
-    hfile = requests.get(url)
-    open(filepath,'wb').write(hfile.content)
-    logger.success("[Fantaspic] 资源文件更新完毕！")
+    await file_update_service()
+
 
 @listen(GroupMessage, FriendMessage)
 @dispatch(Twilight(PrefixMatch(), UnionMatch("fan", "无聊图", "来点图")))
@@ -71,5 +74,14 @@ async def fantaspic(app: Ariadne, event: MessageEvent,supplicant: Member | Frien
     await send_message(event, MessageChain(Image(data_bytes=data)), app.account)
     logger.debug(f"[Fantaspic] 正在发送Url:('https://blog.suchenawa.com/SuricPlugins/fantaspic/{picselect}.jpg')")
 
-
-
+  
+async def file_update_service():
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            data = await resp.read()
+            with open(filepath,"wb") as file:
+                file.write(data)
+                if os.path.exists(filepath):
+                    logger.success("[Fantaspic] 资源文件更新成功！")
+                else:
+                    logger.error("[Fantaspic] 资源文件更新失败！")

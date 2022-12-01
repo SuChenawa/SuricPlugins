@@ -1,15 +1,13 @@
 # 急需有人来帮我扩充一下文案！！
 # 
 # TODO!:将news_settings.json拆分并写入datapath
-# TODO?:增加一个ApplicationLaunched，虽然不知道怎么用，以后再说
 # TODO?:可能需要优化一下网页结构了，之前几十分钟写出来的貌似有点过于凌乱
 import json
 import os
 import random
 from datetime import datetime
 from pathlib import Path
-
-import requests
+import aiohttp
 from creart import it
 from library.util.module import Modules
 from graia.ariadne import Ariadne
@@ -40,29 +38,27 @@ from library.util.message import send_message
 from graia.saya.builtins.broadcast import ListenerSchema
 
 channel = Channel.current()
+
 assets_path = Path(Path(__file__).parent, "assets")
 DATA_PATH = it(Modules).get(channel.module).data_path
 url = 'https://blog.suchenawa.com/SuricPlugins/husbands.json'
-hfile = requests.get(url)
 filepath = Path(DATA_PATH / "husbands.json")
-open(filepath,'wb').write(hfile.content)
-logger.success("[Daily_News] 启动检查:文件下载完毕")
 
 # ################################################################
-# 热更新Json文件
+# *启动更新
+@listen(ApplicationLaunched)
+async def OnApplicationLaunched_Update():
+    logger.info("[Daily_News] 正在运行启动后文件更新服务")
+    await file_update_service()
 
-# 这个是调试用的
+# ################################################################
+# *文件热更新
 # @channel.use(SchedulerSchema(timers.every_minute())) 
-@channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
-async def husbands_sync(app: Ariadne):
-    if os.path.exists(filepath):
-        os.remove(filepath)
-    else:
-        logger.success("[Daily_News] 文件'Husband.Json'不存在，即将自动下载")
-    hfile = requests.get(url)
-    open(filepath,'wb').write(hfile.content)
-    logger.success("[Daily_News] 文件更新完毕")
-    
+# @channel.use(SchedulerSchema(timers.crontabify("30 7 * * * 30")))
+@channel.use(SchedulerSchema(timers.every_hours())) 
+async def dailynews_file_sync(app: Ariadne):
+    await file_update_service()
+
 
 # ################################################################
 # 读取Json文件
@@ -98,8 +94,7 @@ with settings_file.open("r", encoding="UTF-8") as f:
     FunctionCall.record(channel.module),
 )
 async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
-    husbandurl = Path(DATA_PATH / "husbands.json")
-    with husbandurl.open("r", encoding="UTF-8") as f:
+    with filepath.open("r", encoding="UTF-8") as f:
         _data = json.loads(f.read())
         image_Num = _data["picNum"]
     picselect = random.randint(1,image_Num)
@@ -596,7 +591,16 @@ async def bb(app: Ariadne, event: MessageEvent,supplicant: Member | Friend ):
             app.account,
         )
     
-
+async def file_update_service():
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as resp:
+            data = await resp.read()
+            with open(filepath,"wb") as file:
+                file.write(data)
+                if os.path.exists(filepath):
+                    logger.success("[Daily_News] 资源文件更新成功！")
+                else:
+                    logger.error("[Daily_News] 资源文件更新失败！")
 
 # Seed
 def random_seed(supplicant: Member | Friend):

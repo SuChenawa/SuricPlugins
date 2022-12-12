@@ -2,6 +2,7 @@
 # 
 # TODO!:将news_settings.json拆分并写入datapath
 # TODO?:可能需要优化一下网页结构了，之前几十分钟写出来的貌似有点过于凌乱
+# TODO!:想把整个文件写的正经一点，以方便在附近有人的时候进行修改
 import json
 import os
 import random
@@ -102,7 +103,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     # #######################################################################
     # TODO:PlayWright重构
     # #######################################################################
-    # 需要首先判断牛子是否大于0
+    # * 需要首先判断牛子是否大于0
     if(supplicant.id == 1306542338):
         news_length = random.randint(18, 30)
     elif(supplicant.id == 2970290021):
@@ -119,10 +120,10 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 
     if news_length > 0:
 
-        # 确定拥有的生殖器类型
+        # * 确定拥有的生殖器类型
         news_or_cloaca = "牛子"
 
-        # 确定是否勃起
+        # * 确定是否勃起
         if random.randint(0, 1) == 1:
             boki_status = "勃起"
             angle_status = "勃起"
@@ -132,7 +133,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
             angle_status = ""
             angle = f"{random.randint(0, 90)}度"
 
-        # 判断是否包茎
+        # * 判断是否包茎
         rd_phimosis_status = random.randint(0, 2)
         if rd_phimosis_status == 0:
             phimosis_status = "包茎"
@@ -141,11 +142,11 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
         else:
             phimosis_status = "非包茎"
 
-        # 判断蛋蛋重量
+        # * 判断蛋蛋重量
         rd_egg_weight = random.randint(50, 500)
         egg_weight = f"{rd_egg_weight}"
 
-        # 生成牛子的系统评价 # 生成牛子的大众点评
+        # * 生成牛子的系统评价 # 生成牛子的大众点评
         if news_length > 20:
             dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_0)
             dick_comment = random.choice(COMMENT_TEMPLATES_0)
@@ -169,19 +170,19 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 
     elif news_length < 0:
         news_or_cloaca = "泄殖腔"
-        # 生成泄殖腔的系统评价 # 生成泄殖腔的大众点评
+        # * 生成泄殖腔的系统评价 # 生成泄殖腔的大众点评
         dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_5)
         dick_comment = random.choice(COMMENT_TEMPLATES_5)
         news_score = random.randint(0, 100)
 
     else:
         news_or_cloaca = "如履平地"
-        # 生成独特的评价
+        # * 生成独特的评价
         dick_length_evaluate = random.choice(EVALUATE_TEMPLATES_4)
         dick_comment = random.choice(COMMENT_TEMPLATES_4)
         news_score = 0
 
-    # 照搬旧版的附魔系统
+    # * 照搬旧版的附魔系统
     if random.randint(0, 4) == 0:
         enchant_lv = ["Ⅰ", "Ⅱ", "Ⅲ", "Ⅳ", "Ⅴ"]
         enchant_list = [
@@ -214,7 +215,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 
     # 新功能
     # 牛子颜色
-    ## 定义三个数值来生成 RGB
+    # * 定义三个数值来生成 RGB
     cr = random.randint(0, 255)
     cg = random.randint(0, 255)
     cb = random.randint(0, 255)
@@ -230,7 +231,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
         hextextcolor = "rgb(0,0,0)"
     else:
         hextextcolor = "rgb(255,255,255)"
-    # RGB-to-Hex 将RGB转换为Hex值，使其占用长度减少
+    # * RGB-to-Hex 将RGB转换为Hex值，使其占用长度减少
     hexcolor = ("{:02X}" * 3).format(cr, cg, cb)
     # print(cr, cg, cb)
     # print(hexcolor)
@@ -241,26 +242,26 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     # <0 为腔
     # #######################################################################
 
-# 向PlayWright输出的参数内容
-    # 生殖器类型
+# * 向PlayWright输出的参数内容
+    # * 生殖器类型
     news_or_cloaca_out = news_or_cloaca
-    # 长度
+    # * 长度
     news_length_out = news_length
-    # 系统评价
+    # * 系统评价
     system_comment_out = dick_length_evaluate
-    # 颜色底色
+    # * 颜色底色
     hextextcolor_out = hextextcolor
-    # 颜色
+    # * 颜色
     hexcolor_out = f"#{hexcolor}"
-    # 附魔
+    # * 附魔
     dick_enchant_out = dick_enchant
-    # 是否包茎
+    # * 是否包茎
     phimosis_status_out = phimosis_status
-    # 是否勃起
+    # * 是否勃起
     boki_status_out = boki_status
-    # 蛋蛋重量
+    # * 蛋蛋重量
     egg_weight_out = egg_weight
-    # 大众点评分数
+    # * 大众点评分数
     score_out = news_score / 10
     Image_url_out = picselect
     logger.debug(f"[Daily_News] 正在发送Url:('https://blog.suchenawa.com/SuricPlugins/husband/{Image_url_out}.png')")

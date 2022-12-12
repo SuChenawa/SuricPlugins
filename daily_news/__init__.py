@@ -242,6 +242,23 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     # <0 为腔
     # #######################################################################
 
+    # #######################################################################
+    # DarkMode
+    # #######################################################################
+    timeformat = '%H'
+    themeTime = datetime.now().strftime(timeformat)
+    if( 8 < int(themeTime) < 18):
+        light_theme_status = 'theme'
+        light_hover_status = 'theme-h'
+        dark_theme_status = 'disable_theme'
+        dark_hover_status = 'disable_theme-h'
+        logger.debug("当前是LightMode")
+    else:
+        dark_theme_status = 'theme'
+        dark_hover_status = 'theme-h'
+        light_theme_status = 'disable_theme'
+        light_hover_status = 'disable_theme-h'
+        logger.debug("当前是DarkMode")
 # * 向PlayWright输出的参数内容
     # * 生殖器类型
     news_or_cloaca_out = news_or_cloaca
@@ -382,6 +399,38 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
         height: 800px;
         background-color: red;
     }
+"""+f"""   
+    /* LightTheme  */
+    .{light_theme_status}
+"""+"""
+    {
+        color: black;
+        stroke: white;
+        background-color: #FDFCFC
+    }
+"""+f"""
+    .{light_hover_status}
+"""+"""
+{
+        background-color: rgba(46, 101, 120, 0.05);
+    }
+
+    /* DarkTheme */
+"""+f"""
+    .{dark_theme_status}
+"""+"""
+{
+        color: white;
+        stroke: white;
+        background-color: rgb(31, 31, 31);
+    }
+"""+f"""
+    .{dark_hover_status}
+"""+"""
+{
+        background-color: rgb(200,200,200,0.1);
+    }
+
 
     .husband {
 """+f"""
@@ -401,9 +450,9 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
 """
         + f"""
 
-<body class="limit" style="margin:0px;padding:0px;background-color:transparent;">
-    <div style="background-color: #FDFCFC; border-radius: 64px;">
-        <div style="height:180px;background-color: rgba(46, 101, 120, 0.05);">
+<body class="limit theme" style="margin:0px;padding:0px;">
+    <div class="theme">
+        <div class="theme-h" style="height:180px;">
             <div style="display: flex;line-height: 180px">
                 <span class="Rubik-font" style="font-size: 56px;margin-left:56px;">Random_News</span>
                 <span class="Rubik-font right-align"
@@ -416,7 +465,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
                     <div style="border: 1px dashed #74787A;border-radius: 50px;text-align: center;padding: 20px;">
                         <div style="display: flex;">
                             <div style="flex: 1;"></div>
-                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" style="padding:3px 0px">
+                            <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24" style="padding:3px 0px;">
                                 <path
                                     d="M11.875 22.8q-2.225 0-4.2-.85t-3.437-2.312Q2.775 18.175 1.925 16.2q-.85-1.975-.85-4.2 0-2.25.863-4.225Q2.8 5.8 4.3 4.338q1.5-1.463 3.5-2.301 2-.837 4.275-.837 2.2 0 4.163.762 1.962.763 3.45 2.1 1.487 1.338 2.362 3.15.875 1.813.875 3.938 0 3.325-2.15 4.937-2.15 1.613-4.8 1.613h-1.25q-.075 0-.137.062-.063.063-.063.138 0 .15.25.525t.25 1.125q0 1.35-.937 2.3-.938.95-2.213.95ZM12 12Zm-5.725 1.3q.75 0 1.275-.525.525-.525.525-1.275 0-.75-.525-1.275Q7.025 9.7 6.275 9.7q-.75 0-1.275.525-.525.525-.525 1.275 0 .75.525 1.275.525.525 1.275.525Zm3.05-4.1q.75 0 1.275-.525.525-.525.525-1.275 0-.75-.525-1.275-.525-.525-1.275-.525-.75 0-1.275.525-.525.525-.525 1.275 0 .75.525 1.275.525.525 1.275.525Zm5.1 0q.75 0 1.275-.525.525-.525.525-1.275 0-.75-.525-1.275-.525-.525-1.275-.525-.75 0-1.275.525-.525.525-.525 1.275 0 .75.525 1.275.525.525 1.275.525Zm3.1 4.1q.75 0 1.275-.525.525-.525.525-1.275 0-.75-.525-1.275-.525-.525-1.275-.525-.75 0-1.275.525-.525.525-.525 1.275 0 .75.525 1.275.525.525 1.275.525Zm-5.75 6.85q.275 0 .438-.112.162-.113.162-.338 0-.375-.375-.787-.375-.413-.375-1.363 0-1.125.75-1.812.75-.688 1.8-.688h1.8q1.55 0 2.925-.838 1.375-.837 1.375-3.062 0-3.175-2.437-5.238Q15.4 3.85 12.075 3.85q-3.475 0-5.913 2.362Q3.725 8.575 3.725 12q0 3.4 2.325 5.775 2.325 2.375 5.725 2.375Z" />
                             </svg>
@@ -425,7 +474,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
                                 style="line-height: 30px;font-size: 24px;padding:0px 8px 0px 0px">颜色</span>
                             <span class="Rubik-font"
                                 style="line-height: 30px;font-size: 24px;background-color: {hexcolor_out};padding:0px 8px;color:{hextextcolor_out}">{hexcolor_out}</span>
-                            <div style="flex: 1;"></div>
+                            <div style="flex:1;"></div>
                         </div>
                     </div>
                     <br>
@@ -500,18 +549,16 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
                             </svg>
                             <div style="width: 12px;"></div>
                             <span class="Rubik-font"
-                                style="line-height: 30px;font-size: 24px;padding:0px 8px 0px 0px">蛋蛋重量</span>
-                            <span class="Rubik-font"
-                                style="line-height: 30px;font-size: 24px;padding-right: 5px;">{egg_weight_out}</span>
-                            <span class="Rubik-font" style="line-height: 30px;font-size: 24px;">克</span>
+                                style="line-height: 30px;font-size: 24px;padding:0px 8px 0px 0px;overflow: hidden;">蛋蛋重量{egg_weight_out}克</span>
                             <div style="flex: 1;"></div>
                         </div>
                     </div>
+                    
 
 
                 </div>
                 <div style="width: 100%; flex: 1;padding: 20px 40px 20px 40px;">
-                    <div style="background-color: rgba(46, 101, 120, 0.05);padding: 40px;border-radius: 50px;">
+                    <div class="theme-h" style="padding: 40px;border-radius: 50px;">
                         <div style="display: flex;">
                             <span class="Rubic-font"
                                 style="font-size: 36px;font-weight:600;line-height: 40px;">大众点评分数：</span>
@@ -532,7 +579,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
                         <span style="font-size:24px">系统评价：</span>
                         <span style="font-size:24px">{system_comment_out}</span>
                     </div>
-                    <div style="background-color: rgba(46, 101, 120, 0.05);border-radius: 50px;width: 100%;">
+                    <div class="theme-h" style="border-radius: 50px;width: 100%;">
                         <div class="husband" style="height: 300px;width: 100%;border-radius: 50px;">
                             
 

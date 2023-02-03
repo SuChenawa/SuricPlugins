@@ -1,0 +1,21 @@
+{
+    "name": "今日牛子",
+    "version": "2.3.4",
+    "pack": "module.daily_news",
+    "authors": [
+        "suchen",
+        "a57495681800",
+        "nullqwertyuiop"
+    ],
+    "description": "获取你的每日牛子，每天一根，不许多拿！",
+    "category": [
+        "delicious:美味",
+        "random:随机",
+        "husband:老公"
+    ],
+    "advanced": {
+        "allow_disable": true,
+        "allow_unload": true,
+        "hidden": false
+    }
+}

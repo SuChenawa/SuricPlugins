@@ -247,7 +247,7 @@ async def daily_news_playwright(app: Ariadne, event: MessageEvent,supplicant: Me
     # #######################################################################
     timeformat = '%H'
     themeTime = datetime.now().strftime(timeformat)
-    if( 8 < int(themeTime) < 18):
+    if( 7 < int(themeTime) < 18):
         light_theme_status = 'theme'
         light_hover_status = 'theme-h'
         dark_theme_status = 'disable_theme'

@@ -12,19 +12,23 @@
         margin: 0;
         padding: 0;
         font-family: 'Rubik', Fallback, sans-serif;
-        user-select: none;
+        /* user-select: none; */
+    }
+    body{
+        background-color: rgb(229, 229, 229);
     }
 
     .image-overlay-card-test {
-        background-color: rgba(0, 0, 0, 0.1);
-        width: 128px;
-        height: 128px;
+        /* background-color: rgb(246, 248, 252); */
+        width: 480px;
+        height: 480px;
     }
 
-    .container {
+    .generate-container {
         position: relative;
-        width: 512px;
-        height: 512px;
+        background-color: blueviolet;
+        width: 480px;
+        height: 480px;
     }
 
     .overlay {
@@ -47,46 +51,153 @@
 
     .image1 {
         z-index: 1;
-        /* 设置 z-index 控制叠加顺序，值越大越在上层 */
     }
 
     .image2 {
         z-index: 2;
     }
     .colorElement {
-      transition: filter 0.3s ease; /* 添加过渡效果，使颜色变化更平滑 */
+      transition: filter 0.3s ease;
       float: left;
+    }
+    .testcard{
+        width: 480px;
+        height: 480px;
+        background-color: black;
+    }
+    .render-size{
+        width: 1280px;
+        height: 720px;
+        background-color: rgb(246, 248, 252);
+    }
+    .tab-bar{
+        width: 100%;
+        height: 100px;
+        padding: 0px 20px;
+        display: flex;
+        align-items: center;
+        /* background-color: rgba(0, 0, 0, 0.1); */
+    }
+    .content-container{
+        width: 100%;
+        height: 100%;
+        display: flex;
+
+    }
+    .menu{
+
+        width: 360px;
+        height: 620px ;
+        position: relative;
+    }
+    .content{
+        width: 100%;
+        height: 620px ;
+        background-color: rgb(255, 255, 255);
+        border-radius: 16px 0px 0px 0px;
+        display: flex;
+    }
+    .dailynews_title{
+        font-size: 32px;
+        font-style: initial;
+    }
+    .dailynews_title_logo{
+        /* line-height: 100px; */
+        margin: 0px 26px 0px 0px;
+        width: 48px;
+        height: 48px;
+    }
+    .info{
+        width: 360px;
+    }
+    .info-container1{
+        width: 100%;
+        height: 80px;
+        background-color: rgb(242, 246, 252);
+    }
+    
+    .info-container2{
+        width: 100%;
+        height: 80px;
+        background-color: rgb(255, 255, 255);
+    }
+    .menu-item{
+        width: 86%;
+        height: 60px;
+        border-radius: 0px 50px 50px 0px;
+        
+        line-height: 60px;
+    }
+    .menu-select{
+        background-color: rgb(211, 227, 253);
+    }
+    .menu-title{
+        padding-left: 50px;
+        font-size: 18px;
+    }
+    .version{
+        position: absolute;
+        bottom: 0;
+        padding: 0px 20px;
     }
 </style>
 
 <body>
-    <div name="image-overlay-test">
-        <div class="image-overlay-card-test">
+    <div class="render-size">
+        <div class="tab-bar">
+            <img class="dailynews_title_logo" src="" width="48px" height="48px">
+            <span class="dailynews_title">Daily_News</span>
+        </div>
+        <div class="content-container">
+            <div class="menu">
+                <div class="menu-item menu-select">
+                    <span class="menu-title">今日牛子</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-title">自助生成</span>
+                </div>
+                <div class="menu-item">
+                    <span class="menu-title">其他</span>
+                </div>
 
-        </div>
-        <div class="overlay-container">
-            <div class="overlay"></div>
+                <div class="version">
+                    ver 3.0.0
+                </div>
+            </div>
+            <div class="content">
+                <div class="info">
+                    <div class="info-container1"></div>
+                    <div class="info-container2"></div>
+                    <div class="info-container1"></div>
+                    <div class="info-container2"></div>
+                    <div class="info-container1"></div>
+                    <div class="info-container2"></div>
+                </div>
+                <div class="generate-container"> 
+                    <h1 style="line-height: 480px;text-align: center;">图片生成处</h1>
+                    <!-- <img class="filter-img2 image1 overlay colorElement" src="./test.png" ></img>
+                    <img class="filter-img image2 overlay colorElement" src="./test1.png" ></img> -->
+                </div>
+            </div>
         </div>
     </div>
-    <div class="container"> 
-        <img class="filter-img2 image1 overlay colorElement" src="./test.png" ></img>
-        <img class="filter-img image2 overlay colorElement" src="./test1.png" ></img>
-    </div>
+
+
 </body>
+<!-- 整活 -->
 <script>
-    let hueRotateValue = 0; // 初始化 hue-rotate 值
+    let hueRotateValue = 0; 
+    let hueAddValue = 20
     const colorElements = document.querySelectorAll('.colorElement');
 
     function changeHueRotate() {
-      hueRotateValue += 20; // 每次增加5度，可以根据需要调整步长
+      hueRotateValue += hueAddValue; 
 
-      // 循环遍历所有元素，并应用相同的 hue-rotate 值
       colorElements.forEach(element => {
         element.style.filter = `hue-rotate(${hueRotateValue}deg)`;
       });
     }
 
-    // 每100毫秒执行一次 changeHueRotate 函数
     setInterval(changeHueRotate, 100);
   </script>
 </html>
